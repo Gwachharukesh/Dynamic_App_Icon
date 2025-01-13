@@ -1,3 +1,4 @@
+import 'package:change_icon/home_ios.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -29,14 +30,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
+  final int _counter = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,7 +53,12 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const HomeIos()),
+          );
+        },
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ),
