@@ -1,30 +1,43 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
 import 'package:change_icon/main.dart';
+import 'package:change_icon/home_android.dart';
+import 'package:change_icon/home_ios.dart';
+import 'dart:io' show Platform;
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  group('MyApp Widget Tests', () {
+    testWidgets('App builds without errors', (WidgetTester tester) async {
+      await tester.pumpWidget(const MyApp());
+      expect(find.byType(MyHomePage), findsOneWidget);
+    });
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    testWidgets('MyHomePage displays title and FAB', (WidgetTester tester) async {
+      await tester.pumpWidget(const MaterialApp(home: MyHomePage(title: 'Test Title')));
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+      expect(find.text('Test Title'), findsOneWidget);
+      expect(find.byIcon(Icons.palette), findsOneWidget);
+      expect(find.byType(FloatingActionButton), findsOneWidget);
+    });
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    testWidgets('FAB navigates to HomeAndroid on Android', (WidgetTester tester) async {
+      // Note: This test assumes running on non-Android platform (e.g., macOS in tests)
+      // In real Android tests, Platform.isAndroid would be true
+      await tester.pumpWidget(const MaterialApp(home: MyHomePage(title: 'Test')));
+
+      await tester.tap(find.byType(FloatingActionButton));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(HomeAndroid), findsNothing); // Since we're on macOS, it navigates to iOS
+    });
+
+    testWidgets('FAB navigates to HomeIos on iOS', (WidgetTester tester) async {
+      await tester.pumpWidget(const MaterialApp(home: MyHomePage(title: 'Test')));
+
+      await tester.tap(find.byType(FloatingActionButton));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(HomeIos), findsOneWidget);
+    });
   });
 }

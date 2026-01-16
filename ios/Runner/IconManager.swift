@@ -31,25 +31,30 @@ class Model: ObservableObject, Equatable {
 
     /// Change the app icon.
     /// - Tag: setAlternateAppIcon
-    func setAlternateAppIcon(icon: Icon) {
-            // Set the icon name to nil to use the primary icon.
-            let iconName: String? = (icon == .primary) ? nil : icon.rawValue
-            print("Attempting to change icon to: \(String(describing: iconName))")
+    func setAlternateAppIcon(icon: Icon, completion: @escaping (Bool, Error?) -> Void) {
+        // Set the icon name to nil to use the primary icon.
+        let iconName: String? = (icon == .primary) ? nil : icon.rawValue
+        print("Attempting to change icon to: \(String(describing: iconName))")
 
-            // Avoid setting the name if the app already uses that icon.
-            guard UIApplication.shared.alternateIconName != iconName else { return }
+        // Avoid setting the name if the app already uses that icon.
+        guard UIApplication.shared.alternateIconName != iconName else {
+            completion(true, nil)
+            return
+        }
 
-            DispatchQueue.main.async {
+        DispatchQueue.main.async {
             UIApplication.shared.setAlternateIconName(iconName) { error in
                 if let error = error {
                     print("Error setting alternate icon: \(error.localizedDescription)")
+                    completion(false, error)
                 } else {
                     print("Successfully changed icon to: \(String(describing: iconName))")
+                    completion(true, nil)
                 }
             }
         }
 
-            appIcon = icon
+        appIcon = icon
     }
 
     /// Initializes the model with the current state of the app's icon.

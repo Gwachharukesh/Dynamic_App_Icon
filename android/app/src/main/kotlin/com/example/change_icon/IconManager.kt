@@ -7,8 +7,47 @@ import java.util.Calendar
 import android.util.Log
 
 class IconManager(private val context: Context) {
-    private val defaultIcon = ComponentName(context, "com.example.change_icon.MainActivity")
+    private val defaultIcon = ComponentName(context, "com.example.change_icon.MainActivityDefault")
     private val newYearIcon = ComponentName(context, "com.example.change_icon.MainActivityNewYear")
+
+    fun changeIcon(iconName: String): Boolean {
+        val pm = context.packageManager
+
+        return when (iconName) {
+            "AppIcon" -> {
+                Log.d("IconManager", "Switching to default icon")
+                pm.setComponentEnabledSetting(
+                    defaultIcon,
+                    PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                    PackageManager.DONT_KILL_APP
+                )
+                pm.setComponentEnabledSetting(
+                    newYearIcon,
+                    PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                    PackageManager.DONT_KILL_APP
+                )
+                true
+            }
+            "AppIconNewYear" -> {
+                Log.d("IconManager", "Switching to New Year icon")
+                pm.setComponentEnabledSetting(
+                    newYearIcon,
+                    PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                    PackageManager.DONT_KILL_APP
+                )
+                pm.setComponentEnabledSetting(
+                    defaultIcon,
+                    PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                    PackageManager.DONT_KILL_APP
+                )
+                true
+            }
+            else -> {
+                Log.w("IconManager", "Unknown icon name: $iconName")
+                false
+            }
+        }
+    }
 
     fun updateAppIcon() {
         try {

@@ -27,8 +27,20 @@ class _HomeIosState extends State<HomeIos> {
   Future<void> _changeIcon(String iconName) async {
     try {
       await platformChannel.invokeMethod('changeIcon', iconName);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Icon changed! Please restart the app manually to see changes.'),
+            duration: Duration(seconds: 3),
+          ),
+        );
+      }
     } on PlatformException catch (e) {
-      debugPrint('Error changing icon: ${e.message}');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error changing icon: ${e.message}')),
+        );
+      }
     }
   }
 

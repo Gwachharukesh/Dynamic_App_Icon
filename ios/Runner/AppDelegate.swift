@@ -24,7 +24,11 @@ private let CHANNEL = "com.example.change_icon/change_icon"
                     
                     let model = Model()
                     if let icon = Icon(rawValue: iconName) {
-                        model.setAlternateAppIcon(icon: icon)
+                        model.setAlternateAppIcon(icon: icon) { success, error in
+                            if let error = error {
+                                print("Icon change failed: \(error.localizedDescription)")
+                            }
+                        }
                         result(true)
                     } else {
                         result(FlutterError(code: "INVALID_ICON", 

@@ -1,5 +1,9 @@
+import 'dart:io';
+
+import 'package:change_icon/home_android.dart';
 import 'package:change_icon/home_ios.dart';
 import 'package:flutter/material.dart';
+
 
 void main() {
   runApp(const MyApp());
@@ -56,11 +60,13 @@ class _MyHomePageState extends State<MyHomePage> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const HomeIos()),
+            MaterialPageRoute(
+              builder: (context) => Platform.isAndroid ? HomeAndroid() : HomeIos(),
+            ),
           );
         },
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+        tooltip: 'Change Icon',
+        child: const Icon(Icons.palette),
       ),
     );
   }
